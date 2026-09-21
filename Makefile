@@ -4,7 +4,9 @@ CXXFLAGS = -std=c++20 -Wall -Wextra
 
 TARGET = build/game.exe
 
-SRC = src/main.cpp
+SRC = src/main.cpp \
+      src/Game/Game.cpp \
+      src/Player/Player.cpp \
 
 $(TARGET): $(SRC)
 	if not exist build mkdir build

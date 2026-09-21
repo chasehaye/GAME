@@ -1,22 +1,11 @@
 #include <iostream>
+#include "Game.h"
 
 int main() {
 
-    bool running = true;
-    std::cout << "Welcome to my game made for learning\n";
-    while(running) {
-        std::cout << "Enter a command (q to quit): ";
+    Game game;
 
-        char input;
-        std::cin >> input;
-        
-        if (input == 'q')
-        {
-            running = false;
-        }
-
-        std::cout << "Game updated.\n";
-    }
+    game.run();
 
     return 0;
 }
