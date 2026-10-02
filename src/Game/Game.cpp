@@ -1,50 +1,39 @@
-#include "Game.h"
-#include "Player.h"
-#include <iostream>
+#include "game/Game.h"
+#include "raylib.h"
 
-Game::Game()
-{
-    running = true;
+namespace {
+// grid size in cells
+constexpr int kGridWidth = 30;
+constexpr int kGridHeight = 20;
 }
 
-void Game::processInput(char input)
-{
-    std::cout << "Got your input -> " << input << "\n";
+Game::Game() : world(kGridWidth, kGridHeight) {
+    SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_VSYNC_HINT);
+    // 0, 0 = use the monitor's resolution
+    InitWindow(0, 0, "Game Dev Project");
+    ToggleFullscreen();
+    SetTargetFPS(240);
+    // Size and center the grid on screen
+    pixelMapper.fitToScreen(kGridWidth, kGridHeight, GetScreenWidth(), GetScreenHeight());
 }
 
-void Game::quit()
-{
-    std::cout << "Are you sure you want to quit? (y/n): ";
+Game::~Game() {
+    CloseWindow();
+}
 
-    char confirm;
-    std::cin >> confirm;
-
-    if (confirm == 'y')
-    {
-        running = false;
+void Game::run() {
+    while (!WindowShouldClose()) {
+        handleInput();
+        updateGameState(GetFrameTime());
+        render.drawFrame(pixelMapper, world, input.hoveredCell);
     }
 }
 
-void Game::run()
-{
-    std::cout << "Press (q) any time to quit" << "\n";
+void Game::handleInput() {
+    input = readInput(pixelMapper, world.getGrid());
+    playerController.update(input, world, pixelMapper);
+}
 
-    Player player;
-    player.create();
-
-    
-    
-    while (running)
-    {
-        char input;
-        std::cin >> input;
-        if (input == 'q')
-        {
-            quit();
-        }
-        else
-        {
-            processInput(input);
-        }
-    }
+void Game::updateGameState(float dt) {
+    world.update(dt);
 }
