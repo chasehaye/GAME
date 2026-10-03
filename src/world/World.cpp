@@ -39,6 +39,19 @@ void World::connectRoads(Cell* a, Cell* b) {
     }
 }
 
+void World::removeRoad(Cell* cell) {
+    Road* road = Road::on(cell);
+    if (!road) {
+        return;
+    }
+
+    // Erasing the unique_ptr deletes the road, which runs ~Road(). std::erase_if (C++20)
+    // removes every element the check returns true for; here, the one owning this road.
+    std::erase_if(roads, [road](const std::unique_ptr<Road>& owned) {
+        return owned.get() == road;
+    });
+}
+
 const std::vector<std::unique_ptr<Road>>& World::getRoads() const {
     return roads;
 }

@@ -4,6 +4,19 @@
 
 Road::Road(Cell* cell) : WorldObject(cell) {}
 
+Road::~Road() {
+    // Only the other roads' lists are changed here. This road's own list isn't touched
+    // while looping over it, and it is destroyed along with the road anyway.
+    for (Road* neighbor : neighbors) {
+        std::erase(neighbor->neighbors, this);
+    }
+
+    // Mirror of placeOn: the cell stops pointing at this road.
+    if (getCell() && getCell()->getObject() == this) {
+        getCell()->setObject(nullptr);
+    }
+}
+
 std::unique_ptr<Road> Road::placeOn(Cell* cell) {
     if (!cell || cell->getObject()) {
         return nullptr;

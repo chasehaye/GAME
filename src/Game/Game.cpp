@@ -25,7 +25,7 @@ void Game::run() {
     while (!WindowShouldClose()) {
         handleInput();
         updateGameState(GetFrameTime());
-        render.drawFrame(pixelMapper, world, input.hoveredCell);
+        render.drawFrame(pixelMapper, world);
     }
 }
 

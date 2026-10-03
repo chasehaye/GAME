@@ -11,7 +11,8 @@ struct InputState;
 class RoadTool {
 
 public:
-    void update(const InputState& input, World& world, const PixelMapper& pixelMapper);
+    void updateAdd(const InputState& input, World& world, const PixelMapper& pixelMapper);
+    void updateRemove(const InputState& input, World& world);
 
 private:
     void startDrag(const InputState& input, World& world);

@@ -16,6 +16,9 @@ public:
     Grid& getGrid();
     const Grid& getGrid() const;
 
+
+    // Road logic ---------------------------------------------------------------------------------
+
     // Places a road on the cell if it's empty. Returns the road on the cell afterwards
     // (the new one, or the one already there), or nullptr if the cell is missing or
     // holds something that isn't a road.
@@ -25,8 +28,13 @@ public:
     // needed. Does nothing if the cells aren't neighbors or can't hold a road.
     void connectRoads(Cell* a, Cell* b);
 
-    const std::vector<std::unique_ptr<Road>>& getRoads() const;
+    // Removes the road on the cell, if there is one. The road unlinks itself from its
+    // neighbors and its cell as it's destroyed. Safe to call on empty or missing cells.
+    void removeRoad(Cell* cell);
 
+    const std::vector<std::unique_ptr<Road>>& getRoads() const;
+    
+    // Update logic ---------------------------------------------------------------------------------
     // Moves the world forward by dt seconds: everything that happens without the player.
     void update(float dt);
 

@@ -7,20 +7,18 @@
 namespace {
 constexpr Color kBackground{238, 232, 220, 255};
 constexpr Color kGridLine{200, 190, 170, 255};
-constexpr Color kHover{88, 90, 100, 60};
 constexpr Color kRoad{88, 90, 100, 255};
 // Road dot radius, as a fraction of the cell size.
 constexpr float kRoadRadius = 0.3f;
 }
 
 // Draw order is layer order: anything drawn later appears on top.
-void Renderer::drawFrame(const PixelMapper& pixelMapper, const World& world, const Cell* hoveredCell) const {
+void Renderer::drawFrame(const PixelMapper& pixelMapper, const World& world) const {
     BeginDrawing();
     ClearBackground(kBackground);
 
     drawGrid(pixelMapper);
     drawRoads(pixelMapper, world);
-    drawHover(pixelMapper, hoveredCell);
 
     EndDrawing();
 }
@@ -60,11 +58,5 @@ void Renderer::drawRoads(const PixelMapper& pixelMapper, const World& world) con
     // Then a dot on every road, on top, so joins and corners come out round.
     for (const auto& road : world.getRoads()) {
         DrawCircleV(pixelMapper.cellCenter(*road->getCell()), roadRadius, kRoad);
-    }
-}
-
-void Renderer::drawHover(const PixelMapper& pixelMapper, const Cell* hoveredCell) const {
-    if (hoveredCell) {
-        DrawRectangleRec(pixelMapper.cellBounds(*hoveredCell), kHover);
     }
 }

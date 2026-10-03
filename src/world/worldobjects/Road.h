@@ -8,6 +8,10 @@ class Road : public WorldObject {
 public:
     explicit Road(Cell* cell);
 
+    // Cleans up after itself: unlinks from every neighbor and detaches from its cell,
+    // so nothing is left pointing at a road that no longer exists.
+    ~Road() override;
+
     // A copy would share the neighbor list without the neighbors knowing about
     // it, and destroying the copy would unlink the original.
     Road(const Road&) = delete;

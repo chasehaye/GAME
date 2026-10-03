@@ -12,7 +12,7 @@ namespace {
 constexpr float kSnapRadius = 0.4f;
 }
 
-void RoadTool::update(const InputState& input, World& world, const PixelMapper& pixelMapper) {
+void RoadTool::updateAdd(const InputState& input, World& world, const PixelMapper& pixelMapper) {
     if (!input.leftMouseDown) {
         lastDragCell = nullptr;
         return;
@@ -22,12 +22,10 @@ void RoadTool::update(const InputState& input, World& world, const PixelMapper& 
     }
     continueDrag(input, world, pixelMapper);
 }
-
 void RoadTool::startDrag(const InputState& input, World& world) {
     lastDragCell = input.hoveredCell;
     world.placeRoad(lastDragCell);
 }
-
 void RoadTool::continueDrag(const InputState& input, World& world, const PixelMapper& pixelMapper) {
     if (!lastDragCell) {
         return;
@@ -43,5 +41,12 @@ void RoadTool::continueDrag(const InputState& input, World& world, const PixelMa
             lastDragCell = neighbor;
             return;
         }
+    }
+}
+
+
+void RoadTool::updateRemove(const InputState& input, World& world) {
+    if (input.rightMouseDown) {
+        world.removeRoad(input.hoveredCell);
     }
 }
