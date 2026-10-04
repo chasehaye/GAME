@@ -11,8 +11,12 @@ int Cell::getY() const {
     return y;
 }
 
-bool Cell::operator==(const Cell& other) const {
-    return x == other.x && y == other.y;
+WorldObject* Cell::getObject() const {
+    return object;
+}
+
+void Cell::setObject(WorldObject* object) {
+    this->object = object;
 }
 
 bool Cell::isNeighborOf(const Cell& other) const {
@@ -20,10 +24,6 @@ bool Cell::isNeighborOf(const Cell& other) const {
     return !(*this == other) && std::abs(x - other.x) <= 1 && std::abs(y - other.y) <= 1;
 }
 
-WorldObject* Cell::getObject() const {
-    return object;
-}
-
-void Cell::setObject(WorldObject* object) {
-    this->object = object;
+bool Cell::operator==(const Cell& other) const {
+    return x == other.x && y == other.y;
 }

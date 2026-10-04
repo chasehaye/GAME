@@ -5,35 +5,11 @@
 Road::Road(Cell* cell) : WorldObject(cell) {}
 
 Road::~Road() {
-    // Only the other roads' lists are changed here. This road's own list isn't touched
-    // while looping over it, and it is destroyed along with the road anyway.
+    // Remove this road from each neighbor's list. Only the other roads' lists change
+    // here; this road's own list is destroyed along with it.
     for (Road* neighbor : neighbors) {
         std::erase(neighbor->neighbors, this);
     }
-
-    // Mirror of placeOn: the cell stops pointing at this road.
-    if (getCell() && getCell()->getObject() == this) {
-        getCell()->setObject(nullptr);
-    }
-}
-
-std::unique_ptr<Road> Road::placeOn(Cell* cell) {
-    if (!cell || cell->getObject()) {
-        return nullptr;
-    }
-
-    auto road = std::make_unique<Road>(cell);
-    cell->setObject(road.get());
-    return road;
-}
-
-Road* Road::on(Cell* cell) {
-    if (!cell) {
-        return nullptr;
-    }
-    // dynamic_cast checks at run time whether the object is really a Road, and gives
-    // nullptr if it isn't.
-    return dynamic_cast<Road*>(cell->getObject());
 }
 
 void Road::addNeighbor(Road* road) {
@@ -54,4 +30,9 @@ void Road::addNeighbor(Road* road) {
 
 const std::vector<Road*>& Road::getNeighbors() const {
     return neighbors;
+}
+
+bool Road::isIsolated() const {
+    // !!! TODO (when houses are added): also require !connectedBuilding. See Road.h.
+    return neighbors.empty();
 }

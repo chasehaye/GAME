@@ -8,8 +8,8 @@ namespace {
 constexpr Color kBackground{238, 232, 220, 255};
 constexpr Color kGridLine{200, 190, 170, 255};
 constexpr Color kRoad{88, 90, 100, 255};
-// Road dot radius, as a fraction of the cell size.
-constexpr float kRoadRadius = 0.3f;
+// Road dot radius, as a fraction of the cell size. Roads are drawn twice this wide.
+constexpr float kRoadRadius = 0.18f;
 }
 
 // Draw order is layer order: anything drawn later appears on top.

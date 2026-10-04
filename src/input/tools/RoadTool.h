@@ -15,7 +15,7 @@ public:
     void updateRemove(const InputState& input, World& world);
 
 private:
-    void startDrag(const InputState& input, World& world);
+    void startDrag(const InputState& input);
     void continueDrag(const InputState& input, World& world, const PixelMapper& pixelMapper);
 
     // The last cell this drag reached, or nullptr when not dragging.

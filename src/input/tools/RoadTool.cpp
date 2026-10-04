@@ -18,14 +18,17 @@ void RoadTool::updateAdd(const InputState& input, World& world, const PixelMappe
         return;
     }
     if (input.leftMousePressed) {
-        startDrag(input, world);
+        startDrag(input);
     }
     continueDrag(input, world, pixelMapper);
 }
-void RoadTool::startDrag(const InputState& input, World& world) {
+
+void RoadTool::startDrag(const InputState& input) {
+    // Only remember where the drag starts. Nothing is placed until the mouse reaches a
+    // neighbor; then connectRoads puts road on both tiles (if empty) and links them.
     lastDragCell = input.hoveredCell;
-    world.placeRoad(lastDragCell);
 }
+
 void RoadTool::continueDrag(const InputState& input, World& world, const PixelMapper& pixelMapper) {
     if (!lastDragCell) {
         return;
