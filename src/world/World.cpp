@@ -37,7 +37,7 @@ Road* World::placeRoad(Cell* cell) {
 }
 
 void World::connectRoads(Cell* a, Cell* b) {
-    // Checked here as well as in addNeighbor, so no stray road gets placed on a cell
+    // Checked here as well as in addNeighboringRoad, so no stray road gets placed on a cell
     // that can't be linked anyway.
     if (!a || !b || !a->isNeighborOf(*b)) {
         return;
@@ -46,7 +46,7 @@ void World::connectRoads(Cell* a, Cell* b) {
     Road* roadA = placeRoad(a);
     Road* roadB = placeRoad(b);
     if (roadA && roadB) {
-        roadA->addNeighbor(roadB);
+        roadA->addNeighboringRoad(roadB);
     }
 }
 
@@ -56,11 +56,14 @@ void World::removeRoad(Cell* cell) {
         return;
     }
 
-    // !!! TODO (when houses are added): refuse to remove a house's driveway road
-    // (a road with a connectedBuilding), so the player can't erase it. See Road.h.
+    // A road that serves any building can't be erased; it goes only once no building
+    // uses it any more.
+    if (road->isConnectedToBuilding()) {
+        return;
+    }
 
     // Copy the neighbors before deleting: once the road is gone, its list is gone too.
-    const std::vector<Road*> formerNeighbors = road->getNeighbors();
+    const std::vector<Road*> formerNeighbors = road->getNeighboringRoads();
 
     // Detach from the cell first, so it never points at a deleted road.
     cell->setObject(nullptr);
@@ -84,7 +87,47 @@ const std::vector<std::unique_ptr<Road>>& World::getRoads() const {
     return roads;
 }
 
+House* World::houseAt(Cell* cell) const {
+    if (!cell) {
+        return nullptr;
+    }
+    return dynamic_cast<House*>(cell->getObject());
+}
 
+House* World::placeHouse(Cell* cell) {
+    if (House* existing = houseAt(cell)) {
+        return existing;
+    }
+    if (!cell || cell->getObject()) {
+        return nullptr;
+    }
+
+    // check and add available driveway
+    Cell* drivewayCell = nullptr;
+    std::vector<Cell*> neighboringCells = grid.getNeighboringCells(*cell);
+    for (Cell* neighbor : neighboringCells) {
+        if (!neighbor->getObject()) {
+            drivewayCell = neighbor;
+            break;
+        }
+    }
+    if (!drivewayCell) {
+        return nullptr;
+    }
+    Road* driveway = placeRoad(drivewayCell);
+
+    houses.push_back(std::make_unique<House>(cell, driveway));
+    House* house = houses.back().get();
+    cell->setObject(house);
+
+    // The other half of the link: the driveway knows which buildings it serves.
+    driveway->addConnectedBuilding(house);
+    return house;
+}
+
+const std::vector<std::unique_ptr<House>>& World::getHouses() const {
+    return houses;
+}
 
 
 

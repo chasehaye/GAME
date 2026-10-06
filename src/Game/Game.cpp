@@ -15,6 +15,10 @@ Game::Game() : world(kGridWidth, kGridHeight) {
     SetTargetFPS(240);
     // Size and center the grid on screen
     pixelMapper.fitToScreen(kGridWidth, kGridHeight, GetScreenWidth(), GetScreenHeight());
+
+    // TEMPORARY: one house placed by hand so it can be seen and connected to.
+    // Replace with random spawning in World::update once that exists.
+    world.placeHouse(world.getGrid().getCell(kGridWidth / 2, kGridHeight / 2));
 }
 
 Game::~Game() {

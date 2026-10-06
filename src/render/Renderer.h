@@ -13,4 +13,5 @@ public:
 private:
     void drawGrid(const PixelMapper& pixelMapper) const;
     void drawRoads(const PixelMapper& pixelMapper, const World& world) const;
+    void drawHouses(const PixelMapper& pixelMapper, const World& world) const;
 };

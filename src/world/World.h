@@ -2,9 +2,8 @@
 #include <memory>
 #include <vector>
 #include "world/map/Grid.h"
+#include "world/worldobjects/House.h"
 #include "world/worldobjects/Road.h"
-
-class Cell;
 
 // All game state, and the rules for changing it. The only place that creates, owns,
 // and destroys world objects, and the only place that changes what's on a cell.
@@ -36,7 +35,14 @@ public:
     // missing cells.
     void removeRoad(Cell* cell);
 
+
+    // House logic ---------------------------------------------------------------------------------
+    House* houseAt(Cell* cell) const;
+    House* placeHouse(Cell* cell);
+
+    // Functions to return owned data
     const std::vector<std::unique_ptr<Road>>& getRoads() const;
+    const std::vector<std::unique_ptr<House>>& getHouses() const;
 
     // Update logic -------------------------------------------------------------------------------
 
@@ -48,4 +54,5 @@ private:
 
     // Owns every road. Cells and other roads only point at them.
     std::vector<std::unique_ptr<Road>> roads;
+    std::vector<std::unique_ptr<House>> houses;
 };

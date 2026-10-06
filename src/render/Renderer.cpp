@@ -10,6 +10,9 @@ constexpr Color kGridLine{200, 190, 170, 255};
 constexpr Color kRoad{88, 90, 100, 255};
 // Road dot radius, as a fraction of the cell size. Roads are drawn twice this wide.
 constexpr float kRoadRadius = 0.18f;
+constexpr Color kHouse{214, 96, 77, 255};
+// House square size, as a fraction of the cell size (the rest is a gap around it).
+constexpr float kHouseSize = 0.7f;
 }
 
 // Draw order is layer order: anything drawn later appears on top.
@@ -19,6 +22,7 @@ void Renderer::drawFrame(const PixelMapper& pixelMapper, const World& world) con
 
     drawGrid(pixelMapper);
     drawRoads(pixelMapper, world);
+    drawHouses(pixelMapper, world);
 
     EndDrawing();
 }
@@ -50,7 +54,7 @@ void Renderer::drawRoads(const PixelMapper& pixelMapper, const World& world) con
     // so it gets drawn from both ends; the two lines are identical, so that's harmless.
     for (const auto& road : world.getRoads()) {
         const Vector2 from = pixelMapper.cellCenter(*road->getCell());
-        for (const Road* neighbor : road->getNeighbors()) {
+        for (const Road* neighbor : road->getNeighboringRoads()) {
             DrawLineEx(from, pixelMapper.cellCenter(*neighbor->getCell()), roadRadius * 2, kRoad);
         }
     }
@@ -58,5 +62,24 @@ void Renderer::drawRoads(const PixelMapper& pixelMapper, const World& world) con
     // Then a dot on every road, on top, so joins and corners come out round.
     for (const auto& road : world.getRoads()) {
         DrawCircleV(pixelMapper.cellCenter(*road->getCell()), roadRadius, kRoad);
+    }
+}
+
+void Renderer::drawHouses(const PixelMapper& pixelMapper, const World& world) const {
+    const float cellSize = static_cast<float>(pixelMapper.getCellSize());
+    const float roadRadius = cellSize * kRoadRadius;
+    const float houseSize = cellSize * kHouseSize;
+
+    for (const auto& house : world.getHouses()) {
+        const Vector2 center = pixelMapper.cellCenter(*house->getCell());
+
+        // A short stretch of road from the house to its driveway, so they look joined.
+        if (const Road* driveway = house->getDriveway()) {
+            DrawLineEx(center, pixelMapper.cellCenter(*driveway->getCell()), roadRadius * 2, kRoad);
+        }
+
+        // The house itself: a rounded square centered on its cell, drawn over the road.
+        const Rectangle body{center.x - houseSize / 2, center.y - houseSize / 2, houseSize, houseSize};
+        DrawRectangleRounded(body, 0.25f, 8, kHouse);
     }
 }

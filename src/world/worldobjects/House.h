@@ -15,7 +15,10 @@ public:
 
     Road* getDriveway() const;
 
+    void setDriveway(Road* road);
+
 private:
-    Road* driveway;                    // not owned: World owns all roads
-    std::vector<Vehicle*> vehicles;    // not owned; unused until vehicles exist
+    // does not own | owns links to other objects
+    Road* driveway;
+    std::vector<Vehicle*> vehicles;
 };

@@ -15,16 +15,23 @@ public:
     Road(const Road&) = delete;
     Road& operator=(const Road&) = delete;
 
-    // Links both ways. Ignores non-adjacent roads and existing links.
-    void addNeighbor(Road* road);
+    // Many to Many roads
+    const std::vector<Road*>& getNeighboringRoads() const;
+    void addNeighboringRoad(Road* road);
 
-    const std::vector<Road*>& getNeighbors() const;
+    // Many to One Houses
+    const std::vector<WorldObject*>& getConnectedBuildings() const;
+    void addConnectedBuilding(WorldObject* building);       // ignores nullptr and duplicates
+    void removeConnectedBuilding(WorldObject* building);    // does nothing if not connected
 
-    // True if nothing connects to this road.
-    // !!! TODO (houses): a driveway has no road neighbors. Add `WorldObject* connectedBuilding`,
-    // check `neighbors.empty() && !connectedBuilding`, and block erasing driveways in World.
+    bool isConnectedToBuilding() const;                         // serves at least one building
+    bool isConnectedTo(const WorldObject* building) const;     // serves this specific one
+
+    // True if nothing connects to this road: no neighboring roads and no buildings.
     bool isIsolated() const;
 
 private:
-    std::vector<Road*> neighbors;
+    // does not own | owns links to other objects
+    std::vector<Road*> neighboringRoads;
+    std::vector<WorldObject*> connectedBuildings;
 };
