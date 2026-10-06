@@ -31,4 +31,5 @@ private:
     int offsetY = 0;
     int gridWidth = 0;   // in cells
     int gridHeight = 0;
+    int kPadding = 50;
 };

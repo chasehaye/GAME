@@ -3,11 +3,6 @@
 #include "world/map/Cell.h"
 #include "world/map/Grid.h"
 
-namespace {
-// Smallest gap kept between the grid and the screen edge, in pixels.
-constexpr int kPadding = 50;
-}
-
 void PixelMapper::fitToScreen(int newGridWidth, int newGridHeight, int screenWidth, int screenHeight) {
     gridWidth = newGridWidth;
     gridHeight = newGridHeight;
